@@ -1,0 +1,3 @@
+name: PlayerCompass1_12_2
+version: ${project.version}
+main: net.kunmc.lab.playercompass1_12_2.PlayerCompass1_12_2
