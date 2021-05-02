@@ -3,7 +3,7 @@ version: ${project.version}
 main: net.kunmc.lab.playercompass1_12_2.PlayerCompassPlugin
 commands:
   changeupdateperiod:
-    usage: /changeupdateperiod <long>
+    usage: /changeupdateperiod <period>
     permission: playercompass.changeupdateperiod
   compass:
     usage: /compass <player>
@@ -21,3 +21,14 @@ commands:
     usage: /kunxyz
     permission: playercompass.kunxyz
 
+permissions:
+  playercompass.compass:
+    default: op
+  playercompass.playerpos:
+    default: op
+  playercompass.changeupdateperiod:
+    default: op
+  playercompass.kun:
+    default: op
+  playercompass.kunxyz:
+    default: op
