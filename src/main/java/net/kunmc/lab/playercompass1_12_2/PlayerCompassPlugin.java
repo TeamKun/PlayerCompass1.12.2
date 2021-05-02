@@ -4,6 +4,8 @@ import net.kunmc.lab.playercompass1_12_2.command.*;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.Map;
+
 public final class PlayerCompassPlugin extends JavaPlugin {
     private static PlayerCompassPlugin INSTANCE;
     private static PlayerCompassPluginData DATA;
@@ -32,6 +34,13 @@ public final class PlayerCompassPlugin extends JavaPlugin {
         getServer().getPluginCommand("kunxyz").setExecutor(kuncommand);
 
         getServer().getPluginManager().registerEvents(new CompassClickListener(), this);
+
+        Map<String, String> applicants = DATA.getApplicants();
+        if (applicants != null) {
+            for (String senderName : applicants.keySet()) {
+                CompassTaskManager.getInstance().register(senderName, applicants.get(senderName));
+            }
+        }
     }
 
     @Override

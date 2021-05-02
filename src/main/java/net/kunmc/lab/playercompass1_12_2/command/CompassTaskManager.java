@@ -1,6 +1,7 @@
 package net.kunmc.lab.playercompass1_12_2.command;
 
 import net.kunmc.lab.playercompass1_12_2.PlayerCompassPlugin;
+import net.kunmc.lab.playercompass1_12_2.PlayerCompassPluginData;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -16,7 +17,8 @@ import java.util.Map;
 public class CompassTaskManager {
     HashMap<String, CompassUpdateTask> tasks = new HashMap<>();
     private static final CompassTaskManager singleton = new CompassTaskManager();
-    private long updatePeriod = PlayerCompassPlugin.getData().getUpdatePointPeriod();
+    private final PlayerCompassPluginData data = PlayerCompassPlugin.getData();
+    private long updatePeriod = data.getUpdatePointPeriod();
 
     public static CompassTaskManager getInstance() {
         return singleton;
@@ -30,6 +32,7 @@ public class CompassTaskManager {
         CompassUpdateTask task = new CompassUpdateTask(senderName, targetName);
         task.runTaskTimerAsynchronously(PlayerCompassPlugin.getInstance(), 0, updatePeriod);
         tasks.put(senderName, task);
+        data.setApplicant(senderName, targetName);
     }
 
     public void changeUpdatePeriod(long period) {
