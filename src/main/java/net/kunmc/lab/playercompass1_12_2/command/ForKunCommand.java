@@ -27,7 +27,6 @@ public class ForKunCommand implements CommandExecutor {
                 CommandExecutor executor = Bukkit.getPluginCommand("compass").getExecutor();
                 command.setName("compass");
                 executor.onCommand(sender, command, "compass", new String[]{kunName});
-                sender.sendMessage(ChatColor.GREEN + "Kunの方向を指すコンパスを配布しました.");
                 break;
             }
             case "kunxyz": {
