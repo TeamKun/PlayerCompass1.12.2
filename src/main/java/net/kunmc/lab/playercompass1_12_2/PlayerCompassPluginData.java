@@ -31,6 +31,7 @@ public class PlayerCompassPluginData {
 
     public Map<String, String> getApplicants() {
         MemorySection sec = ((MemorySection) config.get("Applicants"));
+        if (sec == null) return null;
 
         Map<String, String> applicants = new HashMap<>();
         for (String key : sec.getKeys(false)) {
