@@ -2,10 +2,13 @@ package net.kunmc.lab.playercompass1_12_2.command;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 
 public class CompassCommand implements CommandExecutor {
     CompassTaskManager manager = CompassTaskManager.getInstance();
@@ -27,6 +30,15 @@ public class CompassCommand implements CommandExecutor {
 
         Player sender = ((Player) commandSender);
         manager.register(sender.getName(), target.getName());
+
+        //Compassを持っていない場合は配布する
+        PlayerInventory inventory = sender.getInventory();
+        boolean hasCompass = false;
+        for (ItemStack item : inventory) {
+            if (item != null && item.getType().equals(Material.COMPASS)) hasCompass = true;
+        }
+        hasCompass |= inventory.getItemInOffHand().getType().equals(Material.COMPASS);
+        if (!hasCompass) inventory.addItem(new ItemStack(Material.COMPASS));
 
         sender.sendMessage(ChatColor.GREEN + "コンパスが" + targetName + "を指すようになりました.");
         return true;
