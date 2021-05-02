@@ -8,6 +8,7 @@ public class PlayerCompassPluginData {
     private final PlayerCompassPlugin plugin;
 
     PlayerCompassPluginData(PlayerCompassPlugin plugin) {
+        plugin.saveDefaultConfig();
         this.config = plugin.getConfig();
         this.plugin = plugin;
 
@@ -36,5 +37,4 @@ public class PlayerCompassPluginData {
     private long getSavePeriod() {
         return config.getLong("SavePeriod");
     }
-
 }

@@ -9,14 +9,14 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class CompassTaskManager {
-    HashMap<String, BukkitTask> tasks = new HashMap<>();
+    HashMap<String, CompassUpdateTask> tasks = new HashMap<>();
     private static final CompassTaskManager singleton = new CompassTaskManager();
-    private final long updatePeriod = PlayerCompassPlugin.getData().getUpdatePointPeriod();
+    private long updatePeriod = PlayerCompassPlugin.getData().getUpdatePointPeriod();
 
     public static CompassTaskManager getInstance() {
         return singleton;
@@ -27,8 +27,21 @@ public class CompassTaskManager {
 
     public void register(String senderName, String targetName) {
         if (tasks.get(senderName) != null) tasks.get(senderName).cancel();
-        BukkitTask task = new CompassUpdateTask(senderName, targetName).runTaskTimerAsynchronously(PlayerCompassPlugin.getInstance(), 0, updatePeriod);
+        CompassUpdateTask task = new CompassUpdateTask(senderName, targetName);
+        task.runTaskTimerAsynchronously(PlayerCompassPlugin.getInstance(), 0, updatePeriod);
         tasks.put(senderName, task);
+    }
+
+    public void changeUpdatePeriod(long period) {
+        this.updatePeriod = period;
+        for (Map.Entry<String, CompassUpdateTask> entry : tasks.entrySet()) {
+            CompassUpdateTask oldTask = entry.getValue();
+            oldTask.cancel();
+            CompassUpdateTask newTask = new CompassUpdateTask(oldTask.senderName, oldTask.targetName);
+            newTask.runTaskTimerAsynchronously(PlayerCompassPlugin.getInstance(), 0, updatePeriod);
+            tasks.put(entry.getKey(), newTask);
+        }
+        PlayerCompassPlugin.getData().setUpdatePointPeriod(period);
     }
 
     private class CompassUpdateTask extends BukkitRunnable {

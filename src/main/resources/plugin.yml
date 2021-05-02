@@ -2,6 +2,9 @@ name: PlayerCompass1_12_2
 version: ${project.version}
 main: net.kunmc.lab.playercompass1_12_2.PlayerCompassPlugin
 commands:
+  changeupdateperiod:
+    usage: /changeupdateperiod <long>
+    permission: playercompass.changeupdateperiod
   compass:
     usage: /compass <player>
     permission: playercompass.compass
