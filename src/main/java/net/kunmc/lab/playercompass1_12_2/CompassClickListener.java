@@ -18,7 +18,7 @@ import java.util.UUID;
 
 public class CompassClickListener implements Listener {
     private final PositionTaskManager manager = PositionTaskManager.getInstance();
-    private final Map<UUID, Boolean> isPositionShown = new HashMap<>();
+    private final Map<UUID, PosStatus> statuses = new HashMap<>();
     private final Map<UUID, Boolean> isCoolDown = new HashMap<>();
 
     @EventHandler
@@ -37,13 +37,13 @@ public class CompassClickListener implements Listener {
         isCoolDown.put(senderUUID, true);
         new CoolDownTask(senderUUID).runTaskLater(PlayerCompassPlugin.getInstance(), 8);
 
-        isPositionShown.putIfAbsent(senderUUID, false);
-        if (isPositionShown.get(senderUUID)) {
+        String targetName = item.getItemMeta().getDisplayName().split("\\(")[0];
+        statuses.putIfAbsent(senderUUID, new PosStatus(targetName, false));
+        if (statuses.get(senderUUID).isShown && statuses.get(senderUUID).targetName.equals(targetName)) {
             manager.unregister(sender);
             sender.sendMessage(ChatColor.GREEN + "座標を非表示にしました.");
-            isPositionShown.put(senderUUID, false);
+            statuses.get(senderUUID).isShown = false;
         } else {
-            String targetName = item.getItemMeta().getDisplayName().split("\\(")[0];
             Player target = Bukkit.getPlayer(targetName);
             if (target == null) {
                 sender.sendMessage(ChatColor.RED + targetName + "はオフラインです.");
@@ -51,7 +51,17 @@ public class CompassClickListener implements Listener {
             }
             manager.register(sender, target);
             sender.sendMessage(ChatColor.GREEN + targetName + "の座標をアクションバーに表示しました.");
-            isPositionShown.put(senderUUID, true);
+            statuses.put(senderUUID, new PosStatus(targetName, true));
+        }
+    }
+
+    private class PosStatus {
+        public String targetName;
+        public boolean isShown;
+
+        public PosStatus(String targetName, boolean isShown) {
+            this.targetName = targetName;
+            this.isShown = isShown;
         }
     }
 
