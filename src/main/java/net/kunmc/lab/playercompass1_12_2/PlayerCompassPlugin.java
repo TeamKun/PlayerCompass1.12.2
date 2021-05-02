@@ -9,15 +9,21 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public final class PlayerCompassPlugin extends JavaPlugin {
     private static PlayerCompassPlugin INSTANCE;
+    private static PlayerCompassPluginData DATA;
 
     public static PlayerCompassPlugin getInstance() {
         return INSTANCE;
+    }
+
+    public static PlayerCompassPluginData getData() {
+        return DATA;
     }
 
     @Override
     public void onEnable() {
         // Plugin startup logic
         INSTANCE = this;
+        DATA = new PlayerCompassPluginData(this);
 
         getServer().getPluginCommand("compass").setExecutor(new CompassCommand());
         getServer().getPluginCommand("playerpos").setExecutor(new ShowPositionCommand());

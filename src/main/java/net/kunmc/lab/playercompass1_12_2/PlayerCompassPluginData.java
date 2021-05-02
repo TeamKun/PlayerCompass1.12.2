@@ -1,14 +1,22 @@
 package net.kunmc.lab.playercompass1_12_2;
 
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.scheduler.BukkitRunnable;
 
-public class PlayerCompassPluginConfig {
+public class PlayerCompassPluginData {
     private final FileConfiguration config;
     private final PlayerCompassPlugin plugin;
 
-    PlayerCompassPluginConfig(PlayerCompassPlugin plugin) {
+    PlayerCompassPluginData(PlayerCompassPlugin plugin) {
         this.config = plugin.getConfig();
         this.plugin = plugin;
+
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                plugin.saveConfig();
+            }
+        }.runTaskTimerAsynchronously(plugin, 0, getSavePeriod());
     }
 
     public long getUpdatePointPeriod() {
@@ -24,4 +32,9 @@ public class PlayerCompassPluginConfig {
         config.set(key, value);
         if (needSave) plugin.saveConfig();
     }
+
+    private long getSavePeriod() {
+        return config.getLong("SavePeriod");
+    }
+
 }
