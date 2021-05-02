@@ -1,3 +1,20 @@
 name: PlayerCompass1_12_2
 version: ${project.version}
-main: net.kunmc.lab.playercompass1_12_2.PlayerCompass1_12_2
+main: net.kunmc.lab.playercompass1_12_2.PlayerCompassPlugin
+commands:
+  compass:
+    usage: /compass <player>
+    permission: playercompass.compass
+  playerpos:
+    usage: /playerpos <player>
+    permission: playercompass.playerpos
+  playerposoff:
+    usage: /playerposoff
+    permission: playercompass.playerpos
+  kun:
+    usage: /kun
+    permission: playercompass.kun
+  kunxyz:
+    usage: /kunxyz
+    permission: playercompass.kunxyz
+
