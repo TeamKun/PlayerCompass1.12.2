@@ -51,7 +51,14 @@ public class PositionTaskManager {
             if (target.isOnline()) {
                 this.lastLoc = target.getLocation();
             }
-            sender.sendActionBar(String.format("%sの座標 X:%.0f Y:%.0f Z:%.0f", target.getName(), lastLoc.getX(), lastLoc.getY(), lastLoc.getZ()));
+
+            Location loc1 = this.lastLoc.clone();
+            loc1.setY(0);
+            Location loc2 = sender.getLocation().clone();
+            loc2.setY(0);
+            double distance = loc1.distance(loc2);
+
+            sender.sendActionBar(String.format("%sの座標 X:%.0f Y:%.0f Z:%.0f 距離:%.0f", target.getName(), lastLoc.getX(), lastLoc.getY(), lastLoc.getZ(), distance));
         }
 
         public String getTargetName() {
