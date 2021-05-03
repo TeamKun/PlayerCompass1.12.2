@@ -50,10 +50,7 @@ public class CompassClickListener implements Listener {
             if (oldTarget != null) oldTarget.setGlowing(false);
             statuses.get(senderUUID).isShown = false;
         } else {
-            if (oldTarget != null) {
-                oldTarget.setGlowing(false);
-                sender.sendMessage(ChatColor.GREEN + oldTargetName + "の発光をオフにしました.");
-            }
+            if (oldTarget != null) oldTarget.setGlowing(false);
 
             Player newTarget = Bukkit.getPlayer(newTargetName);
             if (newTarget == null) {
