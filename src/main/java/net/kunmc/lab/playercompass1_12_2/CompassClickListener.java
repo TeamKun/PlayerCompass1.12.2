@@ -37,7 +37,7 @@ public class CompassClickListener implements Listener {
         isCoolDown.put(senderUUID, true);
         new CoolDownTask(senderUUID).runTaskLater(PlayerCompassPlugin.getInstance(), 8);
 
-        String targetName = item.getItemMeta().getDisplayName().split("\\(")[0];
+        String targetName = item.getItemMeta().getDisplayName().split("\\(")[0].replace(ChatColor.WHITE.toString(), "");
         statuses.putIfAbsent(senderUUID, new PosStatus(targetName, false));
         if (statuses.get(senderUUID).isShown && statuses.get(senderUUID).targetName.equals(targetName)) {
             manager.unregister(sender);

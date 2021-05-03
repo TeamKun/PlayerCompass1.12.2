@@ -3,6 +3,7 @@ package net.kunmc.lab.playercompass1_12_2.command;
 import net.kunmc.lab.playercompass1_12_2.PlayerCompassPlugin;
 import net.kunmc.lab.playercompass1_12_2.PlayerCompassPluginData;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -67,21 +68,32 @@ public class CompassTaskManager {
             Location loc = target.getLocation();
             sender.setCompassTarget(loc);
 
+            String displayName = generateCompassName(target.getName(), loc, sender.getLocation());
+
             PlayerInventory inventory = sender.getInventory();
             inventory.forEach(item -> {
                 if (item.getType().equals(Material.COMPASS)) {
                     ItemMeta meta = item.getItemMeta();
-                    meta.setDisplayName(String.format("%s( X:%.0f Y:%.0f Z:%.0f )", target.getName(), loc.getX(), loc.getY(), loc.getZ()));
+                    meta.setDisplayName(displayName);
                     item.setItemMeta(meta);
                 }
             });
             ItemStack offHand = inventory.getItemInOffHand();
             if (offHand.getType().equals(Material.COMPASS)) {
                 ItemMeta meta = offHand.getItemMeta();
-                meta.setDisplayName(String.format("%s( X:%.0f Y:%.0f Z:%.0f )", target.getName(), loc.getX(), loc.getY(), loc.getZ()));
+                meta.setDisplayName(displayName);
                 offHand.setItemMeta(meta);
                 inventory.setItemInOffHand(offHand);
             }
+        }
+
+        private String generateCompassName(String targetName, Location dstLoc, Location srcLoc) {
+            Location loc1 = dstLoc.clone();
+            loc1.setY(0);
+            Location loc2 = srcLoc.clone();
+            loc2.setY(0);
+            double distance = loc1.distance(loc2);
+            return String.format("%s%s( X:%.0f Y:%.0f Z:%.0f 距離:%.0f )", ChatColor.WHITE, targetName, dstLoc.getX(), dstLoc.getY(), dstLoc.getZ(), distance);
         }
     }
 }
