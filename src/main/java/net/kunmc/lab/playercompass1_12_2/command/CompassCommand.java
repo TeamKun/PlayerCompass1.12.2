@@ -9,6 +9,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CompassCommand implements CommandExecutor {
     CompassTaskManager manager = CompassTaskManager.getInstance();
@@ -38,7 +42,19 @@ public class CompassCommand implements CommandExecutor {
             if (item != null && item.getType().equals(Material.COMPASS)) hasCompass = true;
         }
         hasCompass |= inventory.getItemInOffHand().getType().equals(Material.COMPASS);
-        if (!hasCompass) inventory.addItem(new ItemStack(Material.COMPASS));
+        if (!hasCompass) {
+            ItemStack compass = new ItemStack(Material.COMPASS);
+            ItemMeta meta = compass.getItemMeta();
+            List<String> lore = new ArrayList<>();
+            lore.add(ChatColor.WHITE + "右クリックをすることで対象の座標が");
+            lore.add(ChatColor.WHITE + "Actinobarに表示され,また対象が発光します.");
+            lore.add(ChatColor.WHITE + "もう一度右クリックをすると");
+            lore.add(ChatColor.WHITE + "それらを非表示にすることが出来ます.");
+            meta.setLore(lore);
+            compass.setItemMeta(meta);
+
+            inventory.addItem(compass);
+        }
 
         sender.sendMessage(ChatColor.GREEN + "コンパスが" + targetName + "を指すようになりました.");
         return true;
