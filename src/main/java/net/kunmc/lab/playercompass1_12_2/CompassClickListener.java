@@ -37,21 +37,35 @@ public class CompassClickListener implements Listener {
         isCoolDown.put(senderUUID, true);
         new CoolDownTask(senderUUID).runTaskLater(PlayerCompassPlugin.getInstance(), 8);
 
-        String targetName = item.getItemMeta().getDisplayName().split("\\(")[0].replace(ChatColor.WHITE.toString(), "");
-        statuses.putIfAbsent(senderUUID, new PosStatus(targetName, false));
-        if (statuses.get(senderUUID).isShown && statuses.get(senderUUID).targetName.equals(targetName)) {
+        String newTargetName = item.getItemMeta().getDisplayName().split("\\(")[0].replace(ChatColor.WHITE.toString(), "");
+        statuses.putIfAbsent(senderUUID, new PosStatus(newTargetName, false));
+        String oldTargetName = statuses.get(senderUUID).targetName;
+        Player oldTarget = Bukkit.getPlayer(oldTargetName);
+
+        if (statuses.get(senderUUID).isShown && oldTargetName.equals(newTargetName)) {
             manager.unregister(sender);
             sender.sendMessage(ChatColor.GREEN + "座標を非表示にしました.");
+            sender.sendMessage(ChatColor.GREEN + newTargetName + "の発光をオフにしました.");
+
+            if (oldTarget != null) oldTarget.setGlowing(false);
             statuses.get(senderUUID).isShown = false;
         } else {
-            Player target = Bukkit.getPlayer(targetName);
-            if (target == null) {
-                sender.sendMessage(ChatColor.RED + targetName + "はオフラインです.");
+            if (oldTarget != null) {
+                oldTarget.setGlowing(false);
+                sender.sendMessage(ChatColor.GREEN + oldTargetName + "の発光をオフにしました.");
+            }
+
+            Player newTarget = Bukkit.getPlayer(newTargetName);
+            if (newTarget == null) {
+                sender.sendMessage(ChatColor.RED + newTargetName + "はオフラインです.");
                 return;
             }
-            manager.register(sender, target);
-            sender.sendMessage(ChatColor.GREEN + targetName + "の座標をアクションバーに表示しました.");
-            statuses.put(senderUUID, new PosStatus(targetName, true));
+            manager.register(sender, newTarget);
+            newTarget.setGlowing(true);
+            sender.sendMessage(ChatColor.GREEN + newTargetName + "の座標をアクションバーに表示しました.");
+            sender.sendMessage(ChatColor.GREEN + newTargetName + "を光らせました.");
+            sender.sendMessage(ChatColor.GREEN + "もう一度右クリックすると非表示に出来ます.");
+            statuses.put(senderUUID, new PosStatus(newTargetName, true));
         }
     }
 
