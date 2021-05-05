@@ -1,6 +1,7 @@
 name: PlayerCompass1_12_2
 version: ${project.version}
 main: net.kunmc.lab.playercompass1_12_2.PlayerCompassPlugin
+depend: [ ProtocolLib ]
 commands:
   changeupdateperiod:
     usage: /changeupdateperiod <period>
