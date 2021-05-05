@@ -16,6 +16,10 @@ public class PlayerCompassPluginData {
         this.plugin = plugin;
     }
 
+    public String getKunName() {
+        return config.getString("KunName");
+    }
+
     public long getUpdatePointPeriod() {
         return config.getInt("UpdatePointPeriod");
     }

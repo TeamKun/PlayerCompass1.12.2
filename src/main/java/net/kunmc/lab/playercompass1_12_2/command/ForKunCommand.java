@@ -1,5 +1,6 @@
 package net.kunmc.lab.playercompass1_12_2.command;
 
+import net.kunmc.lab.playercompass1_12_2.PlayerCompassPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -13,7 +14,7 @@ import java.util.UUID;
 public class ForKunCommand implements CommandExecutor {
     private final PositionTaskManager manager = PositionTaskManager.getInstance();
     HashMap<UUID, Boolean> isKunPositionShown = new HashMap<>();
-    String kunName = "roadhog_kun";
+    String kunName = PlayerCompassPlugin.getData().getKunName();
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] strings) {
