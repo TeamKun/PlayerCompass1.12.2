@@ -47,7 +47,7 @@ public class CompassCommand implements CommandExecutor {
             ItemMeta meta = compass.getItemMeta();
             List<String> lore = new ArrayList<>();
             lore.add(ChatColor.WHITE + "右クリックをすることで対象の座標が");
-            lore.add(ChatColor.WHITE + "Actinobarに表示され,また対象が発光します.");
+            lore.add(ChatColor.WHITE + "アクションバーに表示され,また対象が発光します.");
             lore.add(ChatColor.WHITE + "もう一度右クリックをすると");
             lore.add(ChatColor.WHITE + "それらを非表示にすることが出来ます.");
             meta.setLore(lore);
