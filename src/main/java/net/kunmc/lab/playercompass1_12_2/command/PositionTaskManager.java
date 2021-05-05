@@ -1,6 +1,7 @@
 package net.kunmc.lab.playercompass1_12_2.command;
 
 import net.kunmc.lab.playercompass1_12_2.PlayerCompassPlugin;
+import net.kunmc.lab.playercompass1_12_2.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -25,7 +26,7 @@ public class PositionTaskManager {
         Integer oldTaskID = taskIDs.get(sender.getUniqueId());
         if (oldTaskID != null) Bukkit.getScheduler().cancelTask(oldTaskID);
 
-        BukkitTask newTask = new ShowPosTask(sender, target).runTaskTimerAsynchronously(PlayerCompassPlugin.getInstance(), 0, 8);
+        BukkitTask newTask = new ShowPosTask(sender.getName(), target.getName()).runTaskTimerAsynchronously(PlayerCompassPlugin.getInstance(), 0, 8);
         taskIDs.put(sender.getUniqueId(), newTask.getTaskId());
     }
 
@@ -36,33 +37,29 @@ public class PositionTaskManager {
     }
 
     private class ShowPosTask extends BukkitRunnable {
-        Player sender;
-        Player target;
+        String senderName;
+        String targetName;
         Location lastLoc;
 
-        ShowPosTask(Player sender, Player target) {
-            this.sender = sender;
-            this.target = target;
-            this.lastLoc = target.getLocation();
+        ShowPosTask(String senderName, String targetName) {
+            this.senderName = senderName;
+            this.targetName = targetName;
         }
 
         @Override
         public void run() {
-            if (target.isOnline()) {
-                this.lastLoc = target.getLocation();
+            Player sender = Bukkit.getPlayer(senderName);
+            if (sender == null) return;
+            Player target = Bukkit.getPlayer(targetName);
+            if (target != null) this.lastLoc = target.getLocation();
+
+            try {
+                double distance = Utils.calcPlaneDistance(sender.getLocation(), lastLoc);
+                sender.sendActionBar(String.format("%sの座標 X:%.0f Y:%.0f Z:%.0f 距離:%.0fm", targetName, lastLoc.getX(), lastLoc.getY(), lastLoc.getZ(), distance));
+            } catch (IllegalArgumentException ignore) {
+                String worldName = Utils.convertWorldName(lastLoc.getWorld().getName());
+                sender.sendActionBar(String.format("%sの座標 X:%.0f Y:%.0f Z:%.0f %sに居ます", targetName, lastLoc.getX(), lastLoc.getY(), lastLoc.getZ(), worldName));
             }
-
-            Location loc1 = this.lastLoc.clone();
-            loc1.setY(0);
-            Location loc2 = sender.getLocation().clone();
-            loc2.setY(0);
-            double distance = loc1.distance(loc2);
-
-            sender.sendActionBar(String.format("%sの座標 X:%.0f Y:%.0f Z:%.0f 距離:%.0f", target.getName(), lastLoc.getX(), lastLoc.getY(), lastLoc.getZ(), distance));
-        }
-
-        public String getTargetName() {
-            return target.getName();
         }
     }
 }
