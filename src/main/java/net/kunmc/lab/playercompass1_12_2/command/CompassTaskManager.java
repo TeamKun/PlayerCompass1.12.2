@@ -2,6 +2,7 @@ package net.kunmc.lab.playercompass1_12_2.command;
 
 import net.kunmc.lab.playercompass1_12_2.PlayerCompassPlugin;
 import net.kunmc.lab.playercompass1_12_2.PlayerCompassPluginData;
+import net.kunmc.lab.playercompass1_12_2.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -88,12 +89,13 @@ public class CompassTaskManager {
         }
 
         private String generateCompassName(String targetName, Location dstLoc, Location srcLoc) {
-            Location loc1 = dstLoc.clone();
-            loc1.setY(0);
-            Location loc2 = srcLoc.clone();
-            loc2.setY(0);
-            double distance = loc1.distance(loc2);
-            return String.format("%s%s( X:%.0f Y:%.0f Z:%.0f 距離:%.0f )", ChatColor.WHITE, targetName, dstLoc.getX(), dstLoc.getY(), dstLoc.getZ(), distance);
+            try {
+                double distance = Utils.calcPlaneDistance(dstLoc, srcLoc);
+                return String.format("%s%s( X:%.0f Y:%.0f Z:%.0f 距離:%.0fm )", ChatColor.WHITE, targetName, dstLoc.getX(), dstLoc.getY(), dstLoc.getZ(), distance);
+            } catch (IllegalArgumentException e) {
+                String worldName = Utils.convertWorldName(dstLoc.getWorld().getName());
+                return String.format("%s%s( X:%.0f Y:%.0f Z:%.0f %sに居ます )", ChatColor.WHITE, targetName, dstLoc.getX(), dstLoc.getY(), dstLoc.getZ(), worldName);
+            }
         }
     }
 }
