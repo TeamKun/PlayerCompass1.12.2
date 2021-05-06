@@ -7,9 +7,9 @@ public class Utils {
         switch (worldName) {
             case "world":
                 return "オーバーワールド";
-            case "world_nether":
+            case "DIM-1":
                 return "ネザー";
-            case "world_the_end":
+            case "DIM1":
                 return "エンド";
             default:
                 return worldName;
