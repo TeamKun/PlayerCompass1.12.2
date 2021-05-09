@@ -3,7 +3,10 @@ package net.kunmc.lab.playercompass1_12_2.command;
 import net.kunmc.lab.playercompass1_12_2.PlayerCompassPlugin;
 import net.kunmc.lab.playercompass1_12_2.PlayerCompassPluginData;
 import net.kunmc.lab.playercompass1_12_2.utils.Utils;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -39,7 +42,7 @@ public class CompassTaskManager {
         for (Map.Entry<String, CompassUpdateTask> entry : tasks.entrySet()) {
             CompassUpdateTask oldTask = entry.getValue();
             oldTask.cancel();
-            CompassUpdateTask newTask = new CompassUpdateTask(oldTask.senderName, oldTask.targetName, oldTask.lastTargetLoc);
+            CompassUpdateTask newTask = new CompassUpdateTask(oldTask.senderName, oldTask.targetName);
             newTask.runTaskTimerAsynchronously(PlayerCompassPlugin.getInstance(), 0, updatePeriod);
             tasks.put(entry.getKey(), newTask);
         }
@@ -49,23 +52,10 @@ public class CompassTaskManager {
     private class CompassUpdateTask extends BukkitRunnable {
         String senderName;
         String targetName;
-        Location lastTargetLoc;
 
         CompassUpdateTask(String senderName, String targetName) {
             this.senderName = senderName;
             this.targetName = targetName;
-            Player target = Bukkit.getPlayer(targetName);
-            if (target != null) {
-                this.lastTargetLoc = target.getLocation();
-            } else {
-                World overWorld = Bukkit.getWorlds().stream().filter(x -> x.getEnvironment().equals(World.Environment.NORMAL)).findFirst().get();
-                this.lastTargetLoc = new Location(overWorld, 0, 0, 0);
-            }
-        }
-
-        CompassUpdateTask(String senderName, String targetName, Location loc) {
-            this(senderName, targetName);
-            this.lastTargetLoc = loc;
         }
 
         @Override
@@ -74,20 +64,23 @@ public class CompassTaskManager {
             if (sender == null) return;
 
             Player target = Bukkit.getPlayer(targetName);
-            if (target != null) lastTargetLoc = target.getLocation();
-            sender.setCompassTarget(lastTargetLoc);
-            String displayName = generateCompassName(targetName, lastTargetLoc, sender.getLocation());
+            if (target == null) return;
+
+            Location loc = target.getLocation();
+            sender.setCompassTarget(loc);
+
+            String displayName = generateCompassName(target.getName(), loc, sender.getLocation());
 
             PlayerInventory inventory = sender.getInventory();
             inventory.forEach(item -> {
-                if (item.getType().equals(Material.COMPASS)) {
+                if (item != null && item.getType().equals(Material.COMPASS)) {
                     ItemMeta meta = item.getItemMeta();
                     meta.setDisplayName(displayName);
                     item.setItemMeta(meta);
                 }
             });
             ItemStack offHand = inventory.getItemInOffHand();
-            if (offHand.getType().equals(Material.COMPASS)) {
+            if (offHand != null && offHand.getType().equals(Material.COMPASS)) {
                 ItemMeta meta = offHand.getItemMeta();
                 meta.setDisplayName(displayName);
                 offHand.setItemMeta(meta);
